@@ -16,7 +16,13 @@ import { RegisterDto } from '../dtos/register.dto';
 import { ChangePasswordDto } from '../dtos/changePassword.dto';
 import { ForgotPasswordDto } from '../dtos/forgotPassword.dto';
 import { RefreshTokenDto } from '../dtos/refreshToken.dto';
-import { ApiTags } from '@nestjs/swagger';
+import {
+  ApiBadRequestResponse,
+  ApiCreatedResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import { User } from 'src/user/user.entity';
+import { LoginResponse } from '../dtos/loginResponse.dto';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -25,11 +31,27 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('login')
+  @ApiCreatedResponse({
+    description: 'The record has been successfully created.',
+    type: LoginResponse,
+  })
+  @ApiBadRequestResponse({
+    status: 400,
+    description: 'Username or password incorrect',
+  })
   async login(@Res({ passthrough: true }) res, @Body() loginDto: LoginDto) {
     return this.authService.login(res, loginDto);
   }
 
   @Post('register')
+  @ApiCreatedResponse({
+    description: 'The record has been successfully created.',
+    type: LoginResponse,
+  })
+  @ApiBadRequestResponse({
+    status: 400,
+    description: 'Username or password incorrect',
+  })
   async register(@Body() registerDto: RegisterDto) {
     return await this.authService.register(registerDto);
   }
